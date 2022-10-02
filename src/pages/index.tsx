@@ -1,103 +1,73 @@
-import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
-import { ChakraUI, NextJS } from "@components/icons";
-import { FaReact } from "react-icons/fa";
-import { GiFeather } from "react-icons/gi";
-import { SiEslint, SiGoogleanalytics, SiTypescript } from "react-icons/si";
+import { Heading, Image, SimpleGrid, Stack } from '@chakra-ui/react';
+
+const places = [
+  {
+    name: "Raising Cane's",
+    discount: '10%',
+    lastVerified: '2 days',
+    image:
+      'https://www.fresnobee.com/latest-news/o8r40c/picture247768470/alternates/FREE_1140/Raising%20Canes%20food.jpg',
+  },
+  {
+    name: 'Hooters',
+    discount: '15%',
+    lastVerified: '1 hour',
+    image: 'https://www.hooters.com/perch/resources/hooters-logo-lockup-2.png',
+  },
+  {
+    name: 'Walmart',
+    discount: '10%',
+    lastVerified: '2 weeks',
+    image:
+      'https://yt3.ggpht.com/ytc/AMLnZu-OyAciVkTaZ6wsKsz4znni4_Sc9ocuGHxLyH1W4g=s900-c-k-c0x00ffffff-no-rj',
+  },
+  {
+    name: 'Starbucks',
+    discount: '10%',
+    lastVerified: '1 month',
+    image:
+      'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png',
+  },
+];
 
 export default function Home() {
   return (
-    <VStack>
-      <VStack justify="center" minH="600px">
-        <Heading>Hello, World!</Heading>
-      </VStack>
-      <Heading>Stack</Heading>
-      <Flex flexWrap="wrap" maxW="1300px" justify="center">
-        <Card>
-          <SiTypescript size="40px" color="#007acd" />
-          <Heading color="#52baff">Typescript</Heading>
-          <Text>
-            Built to ensure long-term usability and a cleaner // codebase, We
-            use 100% Typescript
-          </Text>
-        </Card>
-        <Card>
-          <ChakraUI />
-
-          <Heading color="#52baff">ChakraUI</Heading>
-          <Text>
-            Using Chakra UI to create accessible React apps with speed and ease
-          </Text>
-        </Card>
-        <Card>
-          <NextJS />
-          <Heading color="#52baff">NextJS</Heading>
-          <Text>
-            This template uses NextJS, Jest, Eslint-Config-Galex, // Google
-            Analytics
-          </Text>
-        </Card>
-        <Card>
-          <GiFeather size="40px" />
-
-          <Heading color="#52baff">Lightweight</Heading>
-          <Text>
-            Setting the baseline configurations to provide an // accelerated
-            development environment
-          </Text>
-        </Card>
-        <Card>
-          <SiGoogleanalytics size="40px" color="#f0ae33" />
-
-          <Heading color="#52baff">Google Analytics</Heading>
-          <Text>
-            You can set a tracking Id in src/config.ts to track // analytics
-          </Text>
-        </Card>
-        <Card>
-          <SiEslint size="40px" color="purple" />
-
-          <Heading color="#52baff">ESLint</Heading>
-          <Text>
-            Using a package of 30+ Eslint Plugins to ensure clean // code
-            quality and accessibility
-          </Text>
-        </Card>
-        <Card>
-          <FaReact size="40px" color="green" />
-
-          <Heading color="#52baff">React Icons</Heading>
-          <p>
-            Icons from popular packages.{" "}
-            <a
-              style={{ color: "#00ffaa" }}
-              href="https://react-icons.github.io/react-icons"
-            >
-              All Icons
-            </a>
-          </p>
-        </Card>
-      </Flex>
-    </VStack>
+    <SimpleGrid columns={2} gap={2} p={4}>
+      {places.map((place) => (
+        <Card {...place} />
+      ))}
+    </SimpleGrid>
   );
 }
 
-function Card({ children }) {
+function Card({ name, discount, lastVerified, image }) {
   return (
-    <Box
-      maxW="370px"
-      w="100%"
-      maxH="400px"
-      h="250px"
-      boxSizing="border-box"
-      p="40px"
-      m="20px"
-      position="relative"
-      bg="#2e3748"
-      rounded="10px"
-      transition="all ease-in-out 0.2s"
-      _hover={{ top: "-8px" }}
+    <Stack
+      bg="white"
+      pos="relative"
+      rounded="lg"
+      borderColor="white"
+      borderWidth="1px"
+      h="150px"
+      bgImg={image || 'https://hazim.tech/logo.png'}
+      bgSize="cover"
+      bgPos="center"
     >
-      {children}
-    </Box>
+      <Image rounded="lg" objectFit="fill" />
+      <Stack
+        pos="absolute"
+        roundedBottom="lg"
+        bottom="0"
+        p={2}
+        bg="blackAlpha.800"
+        backdropFilter="blur(8px)"
+        w="100%"
+      >
+        <Heading size="xs">{name}</Heading>
+        <Heading size="xs" as="h3">
+          {discount} • {lastVerified} ago
+        </Heading>
+      </Stack>
+    </Stack>
   );
 }
