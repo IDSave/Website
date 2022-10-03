@@ -9,13 +9,50 @@ import {
   Divider,
   Text,
   VStack,
-  Input,
+  useToast,
 } from '@chakra-ui/react';
+import { Formik } from 'formik';
+import { InputControl, SubmitButton } from 'formik-chakra-ui';
 import NextChakraLink from '@components/nextChakraLink';
 import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
 import axios from 'axios';
+import { setCookie, getCookie } from 'react-use-cookie';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default function Form({ login = false }) {
+export default function AuthForm({ login = false }) {
+  const toast = useToast();
+  const router = useRouter();
+  useEffect(() => {
+    const authorization = getCookie('authorization');
+
+    if (authorization) {
+      (async () => {
+        try {
+          await axios.get('http://localhost:3000/users/me', {
+            headers: {
+              authorization,
+            },
+          });
+          router.push('/');
+        } catch {}
+      })();
+    }
+  }, []);
+  function OauthButton({ icon, name }) {
+    return (
+      <Button
+        leftIcon={icon()}
+        colorScheme="blackAlpha"
+        size="lg"
+        onClick={async () => {
+          router.push(`http://localhost:3000/auth/${name}`);
+        }}
+      >
+        Continue with {name}
+      </Button>
+    );
+  }
   return (
     <Flex flexDir="column" minH="100vh">
       <Box px={4}>
@@ -49,32 +86,63 @@ export default function Form({ login = false }) {
             or
           </Text>
         </VStack>
-        <Stack>
-          {!login && <Input placeholder="Name" type="text" />}
-          <Input placeholder="Email" type="email" />
-          <Input placeholder="Password" type="password" />
-          {login && (
-            <Text>
-              Forgot password?{' '}
-              <NextChakraLink href="/forgot" color="primary">
-                Reset it
-              </NextChakraLink>
-            </Text>
-          )}
-
-          <Button
-            colorScheme="red"
-            size="lg"
-            onClick={() => {
-              axios.post(
+        <Formik
+          initialValues={{
+            name: '',
+            email: '',
+            password: '',
+          }}
+          onSubmit={async (values) => {
+            console.log(values);
+            try {
+              const { data } = await axios.post(
                 `http://localhost:3000/auth/${login ? 'login' : 'register'}`,
-                {},
+                values,
               );
-            }}
-          >
-            {login ? 'Login' : 'Register'}
-          </Button>
-        </Stack>
+              setCookie('authorization', data.accessToken);
+              router.push('/');
+            } catch (e) {
+              const res = e.response.data;
+              toast({
+                title: res.error,
+                description: res.message,
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+              });
+            }
+          }}
+        >
+          {({ handleSubmit, values, errors }) => (
+            <Stack as="form" onSubmit={handleSubmit as any}>
+              {!login && <InputControl name="name" label="Name" isRequired />}
+              <InputControl
+                name="email"
+                label="Email"
+                isRequired
+                inputProps={{ type: 'email' }}
+              />
+              <InputControl
+                name="password"
+                label="Password"
+                isRequired
+                inputProps={{ type: 'password' }}
+              />
+              {login && (
+                <Text>
+                  Forgot password?{' '}
+                  <NextChakraLink href="/forgot" color="primary">
+                    Reset it
+                  </NextChakraLink>
+                </Text>
+              )}
+
+              <SubmitButton colorScheme="red" size="lg" type="submit">
+                {login ? 'Login' : 'Register'}
+              </SubmitButton>
+            </Stack>
+          )}
+        </Formik>
       </Box>
       <Stack justify="flex-end" flex={1} align="center" pb={4}>
         <Divider />
@@ -90,20 +158,5 @@ export default function Form({ login = false }) {
         </NextChakraLink>
       </Stack>
     </Flex>
-  );
-}
-
-function OauthButton({ icon, name }) {
-  return (
-    <Button
-      leftIcon={icon()}
-      colorScheme="blackAlpha"
-      size="lg"
-      onClick={() => {
-        axios.get(`http://localhost:3000/auth/${name}`);
-      }}
-    >
-      Continue with {name}
-    </Button>
   );
 }

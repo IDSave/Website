@@ -9,12 +9,33 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import { useState } from 'react';
 import { FaAngleDown, FaBars, FaHeart, FaSearch } from 'react-icons/fa';
+import { getCookie, setCookie } from 'react-use-cookie';
 import NextChakraLink from './nextChakraLink';
+import { useEffect } from 'react';
 
 export default function Header() {
   const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    const authorization = getCookie('authorization');
+    if (authorization) {
+      try {
+        (async () => {
+          await axios.get('http://localhost:3000/users/me', {
+            headers: {
+              authorization,
+            },
+          });
+          setLoggedIn(true);
+        })();
+      } catch {
+        setCookie('authorization', '');
+      }
+    }
+  }, []);
+
   return (
     <Flex flexDir="column" w="100%" px={4}>
       <HStack justify="space-between" spacing={0} pt={4}>
@@ -30,7 +51,13 @@ export default function Header() {
               <Icon as={FaHeart} />
             </Flex>
           ) : (
-            <Button as={NextChakraLink} href="/login" colorScheme="red" size="sm" w="50px">
+            <Button
+              as={NextChakraLink}
+              href="/login"
+              colorScheme="red"
+              size="sm"
+              w="50px"
+            >
               Login
             </Button>
           )}
