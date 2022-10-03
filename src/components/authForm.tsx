@@ -50,8 +50,9 @@ export default function Form({ login = false }) {
           </Text>
         </VStack>
         <Stack>
-          <Input placeholder="Email" />
-          <Input placeholder="Password" />
+          {!login && <Input placeholder="Name" type="text" />}
+          <Input placeholder="Email" type="email" />
+          <Input placeholder="Password" type="password" />
           {login && (
             <Text>
               Forgot password?{' '}
@@ -61,7 +62,16 @@ export default function Form({ login = false }) {
             </Text>
           )}
 
-          <Button colorScheme="red" size="lg">
+          <Button
+            colorScheme="red"
+            size="lg"
+            onClick={() => {
+              axios.post(
+                `http://localhost:3000/auth/${login ? 'login' : 'register'}`,
+                {},
+              );
+            }}
+          >
             {login ? 'Login' : 'Register'}
           </Button>
         </Stack>
