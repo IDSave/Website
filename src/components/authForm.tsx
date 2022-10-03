@@ -24,6 +24,13 @@ export default function AuthForm({ login = false }) {
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
+    console.log(router);
+    if (!router.query) return;
+    if (router.query.authorization) {
+      setCookie('authorization', router.query.authorization as string);
+
+      router.push('/');
+    }
     const authorization = getCookie('authorization');
 
     if (authorization) {
@@ -38,7 +45,7 @@ export default function AuthForm({ login = false }) {
         } catch {}
       })();
     }
-  }, []);
+  }, [router]);
   function OauthButton({ icon, name }) {
     return (
       <Button
