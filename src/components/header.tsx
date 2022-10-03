@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FaAngleDown, FaBars, FaHeart, FaSearch } from 'react-icons/fa';
+import NextChakraLink from './nextChakraLink';
 
 export default function Header() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -29,7 +30,7 @@ export default function Header() {
               <Icon as={FaHeart} />
             </Flex>
           ) : (
-            <Button colorScheme="red" size="sm" w="50px">
+            <Button as={NextChakraLink} href="/login" colorScheme="red" size="sm" w="50px">
               Login
             </Button>
           )}

@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import NextChakraLink from '@components/nextChakraLink';
 import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
+import axios from 'axios';
 
 export default function Form({ login = false }) {
   return (
@@ -84,7 +85,14 @@ export default function Form({ login = false }) {
 
 function OauthButton({ icon, name }) {
   return (
-    <Button leftIcon={icon()} colorScheme="blackAlpha" size="lg">
+    <Button
+      leftIcon={icon()}
+      colorScheme="blackAlpha"
+      size="lg"
+      onClick={() => {
+        axios.get(`http://localhost:3000/auth/${name}`);
+      }}
+    >
       Continue with {name}
     </Button>
   );
