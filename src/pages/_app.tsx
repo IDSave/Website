@@ -24,7 +24,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      {router.asPath !== '/login' && <Header />}
+      {router.asPath !== '/login' && router.asPath !== '/register' && (
+        <Header />
+      )}
 
       <Component {...pageProps} />
 
