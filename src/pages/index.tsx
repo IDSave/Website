@@ -1,4 +1,6 @@
 import { Heading, Image, SimpleGrid, Stack } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { google } from 'googleapis';
 
 const places = [
   {
@@ -31,6 +33,13 @@ const places = [
 ];
 
 export default function Home() {
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position);
+      });
+    }
+  }, []);
   return (
     <SimpleGrid columns={2} gap={2} p={4}>
       {places.map((place) => (
