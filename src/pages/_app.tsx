@@ -1,6 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import Footer from '@components/footer';
-import Header from '@components/header';
 import theme from '@styles/theme';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
@@ -24,10 +23,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      {!router.asPath.includes('/login') && router.asPath !== '/register' && (
-        <Header />
-      )}
-
       <Component {...pageProps} />
 
       <Footer />

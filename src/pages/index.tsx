@@ -1,6 +1,8 @@
 import { Heading, Image, SimpleGrid, Stack } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { google } from 'googleapis';
+import Header from '@components/header';
+import { GetServerSidePropsContext } from 'next';
+import axios from 'axios';
 
 const places = [
   {
@@ -32,20 +34,25 @@ const places = [
   },
 ];
 
-export default function Home() {
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
-      });
-    }
-  }, []);
+export default function Home(/* { lat, lng } */) {
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       console.log(position);
+  //     });
+  //   }
+  // }, []);
+  const lat = 36.175;
+  const lng = -115.1372;
   return (
-    <SimpleGrid columns={2} gap={2} p={4}>
-      {places.map((place) => (
-        <Card {...place} />
-      ))}
-    </SimpleGrid>
+    <>
+      <Header lat={lat} lng={lng} />
+      <SimpleGrid columns={2} gap={2} p={4}>
+        {places.map((place) => (
+          <Card {...place} />
+        ))}
+      </SimpleGrid>
+    </>
   );
 }
 
@@ -80,3 +87,26 @@ function Card({ name, discount, lastVerified, image }) {
     </Stack>
   );
 }
+
+// export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+//   const ip =
+//     (req.headers['x-forwarded-for'] as string)?.split(',')?.shift() ||
+//     req.socket?.remoteAddress ||
+//     null;
+
+//   if (!ip)
+//     return {
+//       props: {},
+//     };
+
+//   const { data } = await axios.get(
+//     'https://ipinfo.io/' + ip + `?token=${process.env.IP_API}`,
+//   );
+//   console.log(data);
+//   const [lat, lng] = data.loc.split(',');
+//   const lat = 36.1750;
+//   const lng = -115.1372;
+//   return {
+//     props: { lat, lng },
+//   };
+// }
